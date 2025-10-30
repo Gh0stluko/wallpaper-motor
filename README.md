@@ -26,7 +26,7 @@ Tested on: KDE Plasma 6.5.1, Arch Linux
 ### 1. Clone or Download
 
 ```bash
-git clone https://github.com/yourusername/wallpaperkde.git
+git clone https://github.com/Gh0stluko/wallpaperkde.git
 cd wallpaperkde
 ```
 
