@@ -6,9 +6,11 @@ Note: Plasma wallpaper plugins are implemented in QML/KPackage. This project shi
 
 ## Features
 
-- Playlist of images with thumbnail preview in the config dialog
+- **Photo Playlist Mode**: Playlist of images with thumbnail preview in the config dialog
+- **Wallpaper Engine Support**: Import and display animated wallpapers from Steam Workshop
 - Smooth crossfade transition between images
-- Interval and shuffle options
+- Interval and shuffle options for playlists
+- Video wallpaper support for Wallpaper Engine items
 - Supports common image formats: PNG, JPG/JPEG, GIF, BMP, WebP, AVIF (as supported by your Qt build)
 
 Tested target: KDE Plasma 6.5.1
@@ -21,6 +23,16 @@ Use the Python installer to copy the plugin into your user wallpapers directory.
 python3 tools/install.py
 ```
 
+### Wallpaper Engine Support Setup
+
+To use Wallpaper Engine wallpapers, you need to configure QML file reading permissions:
+
+```bash
+./tools/setup_wallpaper_engine.sh
+```
+
+Then restart plasmashell or log out and back in. See [WALLPAPER_ENGINE_SETUP.md](WALLPAPER_ENGINE_SETUP.md) for details.
+
 If the plugin does not appear in the Wallpaper Type menu, restart Plasma:
 
 ```bash
@@ -31,7 +43,16 @@ kquitapp6 plasmashell && kstart6 plasmashell
 
 - Right-click the desktop → Configure Desktop and Wallpaper…
 - Wallpaper Type: select "Wallpaper Engine"
-- Use the Playlist section to add images, reorder them, and set interval/crossfade.
+
+### Photo Mode
+- Use the **Photo** tab to add images, reorder them, and set interval/crossfade.
+
+### Wallpaper Engine Mode
+- Use the **Wallpaper Engine** tab to import animated wallpapers from Steam
+- Enter your Steam directory (e.g., `/home/user/.local/share/Steam`)
+- Click **Scan** to search for Wallpaper Engine workshop items
+- Browse available wallpapers and click to select one
+- Supports both video (.mp4) and image wallpapers from Workshop ID 431960
 
 ## Debugging and dev loop
 
