@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <entry name="playlist" type="String">
+      <default></default>
+    </entry>
+    <entry name="intervalSeconds" type="Int">
+      <default>30</default>
+      <min>1</min>
+    </entry>
+    <entry name="crossfadeMs" type="Int">
+      <default>800</default>
+      <min>0</min>
+    </entry>
+    <entry name="shuffle" type="Bool">
+      <default>false</default>
+    </entry>
+  </group>
+</kcfg>

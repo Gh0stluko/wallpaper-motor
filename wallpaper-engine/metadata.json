@@ -1,0 +1,16 @@
+{
+  "KPackageStructure": "Plasma/Wallpaper",
+  "KPlugin": {
+    "Id": "wallpaper-engine",
+    "Name": "Wallpaper Engine",
+    "Description": "A playlist-based wallpaper with smooth crossfade transitions and previews.",
+    "Version": "0.1.8",
+    "License": "GPL-3.0-or-later",
+    "EnabledByDefault": true,
+    "Authors": [
+      { "Name": "gluko" }
+    ]
+  },
+  "X-Plasma-MainScript": "contents/ui/main.qml",
+  "X-Plasma-ConfigPlugins": ["wallpaper_wallpaper-engine_config"]
+}
