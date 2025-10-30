@@ -1,0 +1,101 @@
+═══════════════════════════════════════════════════════════════
+  WALLPAPER ENGINE FOR KDE PLASMA 6 - INSTALLATION GUIDE
+═══════════════════════════════════════════════════════════════
+
+Quick Installation (3 commands):
+---------------------------------
+
+1. python3 tools/install.py
+2. ./tools/setup_wallpaper_engine.sh
+3. kquitapp6 plasmashell && kstart6 plasmashell
+
+That's it! Now configure:
+- Right-click desktop → Configure Desktop and Wallpaper
+- Wallpaper Type → "Wallpaper Engine"
+
+═══════════════════════════════════════════════════════════════
+
+Detailed Steps:
+---------------------------------
+
+STEP 1: Install the plugin
+  $ python3 tools/install.py
+  
+  This copies the plugin to:
+  ~/.local/share/plasma/wallpapers/wallpaper-engine/
+
+STEP 2: Setup Wallpaper Engine support (required!)
+  $ ./tools/setup_wallpaper_engine.sh
+  
+  This enables QML to read Wallpaper Engine files.
+  Creates: ~/.config/systemd/user/plasma-plasmashell.service.d/
+
+STEP 3: Restart Plasma
+  $ kquitapp6 plasmashell && kstart6 plasmashell
+  
+  Or log out and log back in.
+
+STEP 4: Configure wallpaper
+  - Right-click desktop
+  - "Configure Desktop and Wallpaper"
+  - Wallpaper Type → "Wallpaper Engine"
+  
+  Choose a mode:
+  ✓ Photo tab - for image slideshows
+  ✓ Wallpaper Engine tab - for animated wallpapers
+
+═══════════════════════════════════════════════════════════════
+
+Using Photo Mode:
+---------------------------------
+1. Go to "Photo" tab
+2. Click "Use this mode"
+3. Click "Add" to select images
+4. Configure interval and crossfade
+5. Done!
+
+Using Wallpaper Engine Mode:
+---------------------------------
+1. Go to "Wallpaper Engine" tab
+2. Click "Use this mode"
+3. Enter Steam directory: /home/yourname/.local/share/Steam
+4. Click "Scan"
+5. Click on any wallpaper to select it
+6. Done!
+
+═══════════════════════════════════════════════════════════════
+
+Troubleshooting:
+---------------------------------
+
+Plugin doesn't appear?
+→ Run: kquitapp6 plasmashell && kstart6 plasmashell
+
+Wallpaper Engine wallpapers don't load?
+→ Make sure you ran: ./tools/setup_wallpaper_engine.sh
+→ Then restart plasmashell
+
+Black screen?
+→ Check logs: ./tools/logs.sh
+→ Verify setup script was executed
+
+Performance issues?
+→ Use Photo mode (lightweight)
+→ Or use 1080p WE wallpapers instead of 4K
+→ Enable hardware video decoding
+
+═══════════════════════════════════════════════════════════════
+
+Uninstall:
+---------------------------------
+$ rm -rf ~/.local/share/plasma/wallpapers/wallpaper-engine/
+$ rm -rf ~/.config/systemd/user/plasma-plasmashell.service.d/wallpaper-engine.conf
+$ systemctl --user daemon-reload
+$ kquitapp6 plasmashell && kstart6 plasmashell
+
+═══════════════════════════════════════════════════════════════
+
+For more info: README.md or QUICKSTART.md
+Report issues: https://github.com/yourusername/wallpaperkde/issues
+
+═══════════════════════════════════════════════════════════════
