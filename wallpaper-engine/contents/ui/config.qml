@@ -78,17 +78,13 @@ ColumnLayout {
             } }
         Button { text: qsTr("Move up"); enabled: view.currentIndex > 0; onClicked: {
                 var i = view.currentIndex
-                var item = playlistModel.get(i)
-                playlistModel.remove(i)
-                playlistModel.insert(i-1, item)
+                playlistModel.move(i, i-1, 1)
                 view.currentIndex = i-1
                 updatePlaylist()
             } }
         Button { text: qsTr("Move down"); enabled: view.currentIndex >= 0 && view.currentIndex < playlistModel.count-1; onClicked: {
                 var i = view.currentIndex
-                var item = playlistModel.get(i)
-                playlistModel.remove(i)
-                playlistModel.insert(i+1, item)
+                playlistModel.move(i, i+1, 1)
                 view.currentIndex = i+1
                 updatePlaylist()
             } }
