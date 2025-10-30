@@ -3,7 +3,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Dialogs
 import org.kde.kirigami 2.20 as Kirigami
-import Qt.labs.folderlistmodel
 
 // Configuration UI for the wallpaper plugin
 ColumnLayout {
@@ -18,7 +17,6 @@ ColumnLayout {
     property alias cfg_intervalSeconds: intervalField.value
     property alias cfg_crossfadeMs: crossfadeField.value
     property alias cfg_shuffle: shuffleCheck.checked
-    property string cfg_steamDir
 
     // Tabs
     TabBar {
@@ -170,154 +168,17 @@ ColumnLayout {
             }
         }
 
-        // Wallpaper Engine page
+        // Wallpaper Engine page (placeholder)
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            
-            // Helpers for path/url
-            function toStringUrl(u) { return (u && u.toString) ? u.toString() : (typeof u === 'string' ? u : "") }
-            function toFileUrl(p) {
-                if (!p) return ""
-                if (typeof p !== 'string') p = toStringUrl(p)
-                if (p.startsWith("file://")) return p
-                // ensure exactly three slashes after scheme
-                if (p.startsWith('/')) return "file://" + p
-                return "file:///" + p
-            }
-            function joinUrl(base, suffix) {
-                var b = toStringUrl(base)
-                if (!b) return ""
-                if (b.endsWith('/')) b = b.substring(0, b.length-1)
-                return b + '/' + suffix
-            }
-            // Resolve workshop root
-            property string steamRootUrl: toFileUrl(root.cfg_steamDir)
-            property string workshopUrl: joinUrl(steamRootUrl, "steamapps/workshop/content/431960")
-
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: Kirigami.Units.largeSpacing
-
                 Kirigami.Heading { text: qsTr("Wallpaper Engine"); level: 3 }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: Kirigami.Units.smallSpacing
-                    Label { text: qsTr("Steam dir:") }
-                    TextField {
-                        id: steamDirField
-                        Layout.fillWidth: true
-                        text: root.cfg_steamDir
-                        placeholderText: qsTr("/home/user/.local/share/Steam/")
-                        onEditingFinished: root.cfg_steamDir = text
-                    }
-                    Button { text: qsTr("Browse…"); onClicked: steamFolderDialog.open() }
-                    Button { text: qsTr("Refresh"); onClicked: weDirs.refresh() }
-                }
-
-                Label {
-                    text: workshopUrl ? qsTr("Workshop: %1 — items: %2").arg(workshopUrl).arg(weDirs.count) : qsTr("Set Steam directory to scan Workshop content (app 431960).")
-                    wrapMode: Text.WordWrap
-                    opacity: 0.8
-                }
-
-                // Directory chooser
-                FolderDialog {
-                    id: steamFolderDialog
-                    title: qsTr("Select your Steam directory")
-                    onAccepted: {
-                        // folder may be url (QUrl) or string
-                        var u = typeof selectedFolder === 'string' ? selectedFolder : selectedFolder.toString()
-                        // Normalize to local path (strip file://) for storage
-                        if (u.startsWith('file://')) u = u.substring(7)
-                        root.cfg_steamDir = u
-                        steamDirField.text = u
-                        // Keep binding on weDirs.folder; just refresh to re-read
-                        weDirs.refresh()
-                    }
-                }
-
-                // List workshop subfolders (each is a wallpaper item)
-                FolderListModel {
-                    id: weDirs
-                    folder: workshopUrl
-                    showDirs: true
-                    showFiles: false
-                    showHidden: false
-                    showOnlyReadable: true
-                    nameFilters: ["*"]
-                }
-
-                // Selection state
-                property var selected: ({})
-                function toggleSelected(key, value) {
-                    if (selected[key]) delete selected[key]; else selected[key] = value
-                }
-
-                // Helper note
-                Label { text: qsTr("Select your Steam directory to load Wallpaper Engine Workshop items (app 431960)." ); wrapMode: Text.WordWrap; opacity: 0.7 }
-
-                // Grid of workshop items
-                GridView {
-                    id: weView
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    cellWidth: 180
-                    cellHeight: 140
-                    visible: workshopUrl !== ""
-                    model: workshopUrl !== "" ? weDirs : null
-                    delegate: Frame {
-                        width: 170; height: 130
-                        visible: (typeof fileIsDir !== 'undefined' ? fileIsDir : (typeof isFolder !== 'undefined' ? isFolder : true))
-                        property string dirUrl: toStringUrl(typeof fileURL !== 'undefined' ? fileURL : (typeof fileUrl !== 'undefined' ? fileUrl : filePath))
-                        property string title: meta && meta.title ? meta.title : fileName
-                        property string type: meta && meta.type ? meta.type : ""
-                        property string previewUrl: meta && meta.preview ? joinUrl(dirUrl, meta.preview) : ""
-                        property string videoUrl: meta && meta.file ? joinUrl(dirUrl, meta.file) : ""
-                        property var meta: null
-
-                        background: Rectangle { radius: 6; border.color: Kirigami.Theme.textColor; border.width: 1; color: "transparent" }
-                        ColumnLayout {
-                            anchors.fill: parent
-                            anchors.margins: 6
-                            Item {
-                                Layout.fillWidth: true; Layout.preferredHeight: 90
-                                Image { anchors.fill: parent; fillMode: Image.PreserveAspectCrop; source: previewUrl }
-                                CheckBox {
-                                    id: sel
-                                    anchors.top: parent.top; anchors.right: parent.right
-                                    checked: !!root.selected[dirUrl]
-                                    onClicked: root.toggleSelected(dirUrl, { previewUrl: previewUrl, videoUrl: videoUrl, title: title })
-                                }
-                            }
-                            Label { text: title; elide: Text.ElideRight; Layout.fillWidth: true }
-                            Label { text: type; opacity: 0.6 }
-                        }
-
-                        Component.onCompleted: {
-                            // Load meta from project.json
-                            var xhr = new XMLHttpRequest()
-                            xhr.open('GET', joinUrl(dirUrl, 'project.json'))
-                            xhr.onreadystatechange = function() {
-                                if (xhr.readyState === XMLHttpRequest.DONE) {
-                                    try {
-                                        meta = JSON.parse(xhr.responseText)
-                                    } catch (e) { /* ignore */ }
-                                }
-                            }
-                            xhr.send()
-                        }
-                    }
-                }
-
-                // Empty state
-                Label {
-                    visible: workshopUrl !== "" && weDirs.count === 0
-                    text: qsTr("No Workshop items found in %1").arg(workshopUrl)
-                    opacity: 0.7
-                }
-
+                Label { text: qsTr("Coming soon: import and manage animated wallpapers.") }
+                Label { text: qsTr("For now, use the Photo tab to configure a slideshow.") }
+                Item { Layout.fillHeight: true }
             }
         }
 
