@@ -10,8 +10,9 @@
       <min>1</min>
     </entry>
     <entry name="crossfadeMs" type="Int">
-      <default>800</default>
+      <default>2000</default>
       <min>0</min>
+      <max>10000</max>
     </entry>
     <entry name="shuffle" type="Bool">
       <default>false</default>

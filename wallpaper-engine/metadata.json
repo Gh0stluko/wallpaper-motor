@@ -4,7 +4,7 @@
     "Id": "wallpaper-engine",
     "Name": "Wallpaper Engine",
     "Description": "A playlist-based wallpaper with smooth crossfade transitions and previews.",
-    "Version": "0.1.8",
+    "Version": "0.2.2",
     "License": "GPL-3.0-or-later",
     "EnabledByDefault": true,
     "Authors": [

@@ -129,7 +129,8 @@ ColumnLayout {
         Label { text: qsTr("Crossfade (ms):") }
         SpinBox {
             id: crossfadeField
-            from: 0; to: 10000; value: 800
+            from: 0; to: 10000; value: 5000
+            stepSize: 100
         }
     }
     

@@ -33,7 +33,7 @@ WallpaperItem {
     property string currentSource: ""
     property string nextSource: ""
 
-    // Double-buffered images for crossfade
+    // Double-buffered images for crossfade with smooth blending
     Image {
         id: imgA
         anchors.fill: parent
@@ -43,6 +43,8 @@ WallpaperItem {
         opacity: 1.0
         smooth: true
         cache: true
+        asynchronous: true
+        mipmap: true
     }
     Image {
         id: imgB
@@ -53,14 +55,32 @@ WallpaperItem {
         opacity: 0.0
         smooth: true
         cache: true
+        asynchronous: true
+        mipmap: true
     }
 
-    // Crossfade animation
+    // Crossfade animation with smooth blending - uses slower middle part for beautiful overlap
     SequentialAnimation {
         id: crossfadeAnim
         running: false
-        PropertyAnimation { target: imgA; property: "opacity"; to: 0.0; duration: root.crossfadeMs; easing.type: Easing.InOutQuad }
-        PropertyAnimation { target: imgB; property: "opacity"; to: 1.0; duration: root.crossfadeMs; easing.type: Easing.InOutQuad }
+        ParallelAnimation {
+            NumberAnimation { 
+                target: imgA
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+                duration: root.crossfadeMs
+                easing.type: Easing.InOutQuart
+            }
+            NumberAnimation { 
+                target: imgB
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+                duration: root.crossfadeMs
+                easing.type: Easing.InOutQuart
+            }
+        }
         onStopped: {
             // Swap buffers
             root.currentSource = imgB.source
