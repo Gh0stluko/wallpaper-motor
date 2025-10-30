@@ -22,7 +22,6 @@ def main():
     copytree(SRC_ROOT, DEST_ROOT)
     print(f"Installed plugin to: {DEST_ROOT}")
     print("Now open Desktop Settings → Wallpaper → Wallpaper Type and select 'Wallpaper Engine'.")
-    print("If it does not appear, try restarting plasmashell: 'kquitapp6 plasmashell && kstart6 plasmashell'")
     return 0
 
 
