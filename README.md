@@ -33,6 +33,47 @@ kquitapp6 plasmashell && kstart6 plasmashell
 - Wallpaper Type: select "Wallpaper Engine"
 - Use the Playlist section to add images, reorder them, and set interval/crossfade.
 
+## Debugging and dev loop
+
+If UI doesn’t show or you want quick iteration, use these helpers:
+
+- Live logs (QML/Qt warnings and errors):
+
+	```bash
+	./tools/logs.sh
+	```
+
+- One-shot reinstall + restart Plasma shell (reload QML):
+
+	```bash
+	./tools/reload.sh
+	```
+
+- Watch for file changes and auto-reload:
+
+	```bash
+	# Requires: inotify-tools (sudo apt install inotify-tools)
+	./tools/watch.sh
+	```
+
+Additional tips:
+
+- Validate QML syntax statically with qmllint (from qt6-declarative-tools):
+
+	```bash
+	qmllint wallpaper-engine/contents/ui/main.qml
+	qmllint wallpaper-engine/contents/ui/config.qml
+	```
+
+- For immediate logs without journalctl, run plasmashell in a terminal session temporarily:
+	- Switch to a TTY or open Konsole, then run: `plasmashell --replace` (your desktop will restart and logs will stream in that terminal). Press Ctrl-C to stop and restore via `kstart6 plasmashell`.
+
+- Common issues if UI doesn’t render:
+	- Root item must be `WallpaperItem` on Plasma 6 (this project uses it).
+	- Config keys in QML must match `contents/config/main.xml` (`configuration.playlist`, `intervalSeconds`, etc.).
+	- Image sources should be valid URLs (e.g., file:///home/user/Pictures/a.jpg). The config dialog saves file URLs.
+	- After updating files, reinstall and restart (use scripts above). Plasma caches packages aggressively.
+
 ## Notes
 
 - Plasma does not execute Python code inside wallpaper plugins. The runtime is QML/JavaScript (with QtQuick), so the plugin itself is QML. Python is used here for tooling (installer) and can be used for future helpers.
