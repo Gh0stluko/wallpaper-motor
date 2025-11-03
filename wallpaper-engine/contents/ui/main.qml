@@ -141,6 +141,18 @@ WallpaperItem {
                 loadProjectData()
             }
             
+            // Handle visibility changes (e.g., after display sleep)
+            onVisibleChanged: {
+                if (visible && wallpaperType === "video") {
+                    console.log("WE display became visible, ensuring video playback")
+                    Qt.callLater(function() {
+                        if (videoPlayer.playbackState !== MediaPlayer.PlayingState) {
+                            videoPlayer.play()
+                        }
+                    })
+                }
+            }
+            
             function loadProjectData() {
                 var xhr = new XMLHttpRequest()
                 xhr.onreadystatechange = function() {
@@ -178,13 +190,43 @@ WallpaperItem {
                     console.log("Video player created for: " + source)
                 }
                 
+                // Monitor visibility to handle display sleep/wake
+                onVisibleChanged: {
+                    if (visible && playbackState !== MediaPlayer.PlayingState) {
+                        console.log("Display woke up, restarting video playback")
+                        Qt.callLater(function() {
+                            play()
+                        })
+                    }
+                }
+                
+                // Monitor playback state and auto-restart if stopped unexpectedly
                 onPlaybackStateChanged: {
                     console.log("Video playback state: " + playbackState)
+                    if (visible && playbackState === MediaPlayer.StoppedState) {
+                        console.log("Video stopped unexpectedly, restarting")
+                        Qt.callLater(function() {
+                            play()
+                        })
+                    }
                 }
                 
                 onErrorStringChanged: {
                     if (errorString.length > 0) {
                         console.log("Video error: " + errorString)
+                    }
+                }
+                
+                // Add a timer to periodically check and restart if needed
+                Timer {
+                    interval: 5000  // Check every 5 seconds
+                    running: videoPlayer.visible
+                    repeat: true
+                    onTriggered: {
+                        if (videoPlayer.visible && videoPlayer.playbackState !== MediaPlayer.PlayingState) {
+                            console.log("Video not playing, attempting restart")
+                            videoPlayer.play()
+                        }
                     }
                 }
             }
