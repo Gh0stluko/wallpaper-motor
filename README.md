@@ -1,6 +1,9 @@
-# Wallpaper Engine (KDE Plasma 6)
+<h1 align="center">Wallpaper Engine (KDE Plasma 6)</h1>
+
+![2025-11-16 22-40-27](https://github.com/user-attachments/assets/3d3dd7d4-5a9f-4ff1-b559-e3ede17619c1)
 
 A KDE Plasma 6 wallpaper plugin that supports both photo playlists and Wallpaper Engine animated wallpapers from Steam Workshop.
+
 
 ## Features
 
